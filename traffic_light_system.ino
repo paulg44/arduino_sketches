@@ -3,7 +3,62 @@
 int RED = 9;
 int YELLOW = 8;
 int GREEN = 7;
-LiquidCrystal lcd(11,    10, 5, 4, 3, 2);
+LiquidCrystal lcd(11, 10, 5, 4, 3, 2);
+
+byte stop_icon[] = {
+  B00000,
+  B00000,
+  B01110,
+  B10011,
+  B10101,
+  B11001,
+  B01110,
+  B00000
+};
+
+byte arrow_bottom[] = {
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B11111
+};
+
+byte arrow_top[] = {
+  B11111,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000
+};
+
+byte arrow_point_bottom[] = {
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B10000,
+  B11000,
+  B11100,
+  B11110
+};
+
+byte arrow_point_top[] = {
+  B11110,
+  B11100,
+  B11000,
+  B10000,
+  B00000,
+  B00000,
+  B00000,
+  B00000
+};
 
 int DELAY_RED = 5000;
 int DELAY_YELLOW = 2000;
@@ -19,13 +74,11 @@ void setup(){
   pinMode(GREEN,  OUTPUT);
   // Initialises the width, 16 columns. And rows , 2
      lcd.begin(16, 2);
-  // Sets position of the cursor on screen
-     lcd.setCursor(0, 1);
-    //  Prints 
-     lcd.print("Turning On");
-    //  Resets cursor after printing
-     lcd.setCursor(0, 1);
      lcd.print("Traffic Light");
+     lcd.createChar(1, arrow_bottom);
+     lcd.createChar(2, arrow_top);
+     lcd.createChar(3, arrow_point_bottom);
+     lcd.createChar(4, arrow_point_top);
      delay(2000);
     //  Clears any text
      lcd.clear();
@@ -43,6 +96,8 @@ void loop(){
 
   green_light();
    walk();
+   lcd.setCursor(0, 1);
+   lcd.write(byte(0));
   delay(RANDOM_GREEN_LENGTH[random_index]);
    lcd.clear();
 
@@ -53,6 +108,26 @@ void loop(){
    lcd.begin(16, 2);
    lcd.setCursor(0, 0);
    lcd.print("WALK");
+   lcd.setCursor(8, 0);
+   lcd.write(byte(1));
+   lcd.setCursor(9, 0);
+   lcd.write(byte(1));
+   lcd.setCursor(10, 0);
+   lcd.write(byte(1));
+   lcd.setCursor(11, 0);
+   lcd.write(byte(1));
+   lcd.setCursor(8, 1);
+   lcd.write(byte(2));
+   lcd.setCursor(9, 1);
+   lcd.write(byte(2));
+   lcd.setCursor(10, 1);
+   lcd.write(byte(2));
+   lcd.setCursor(11, 1);
+   lcd.write(byte(2));
+   lcd.setCursor(12, 0);
+   lcd.write(byte(3));
+   lcd.setCursor(12, 1);
+   lcd.write(byte(4));
   delay(DELAY_RED);
    lcd.clear();
 
