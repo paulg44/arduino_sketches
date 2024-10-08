@@ -5,17 +5,6 @@ int YELLOW = 8;
 int GREEN = 7;
 LiquidCrystal lcd(11, 10, 5, 4, 3, 2);
 
-byte stop_icon[] = {
-  B00000,
-  B00000,
-  B01110,
-  B10011,
-  B10101,
-  B11001,
-  B01110,
-  B00000
-};
-
 byte arrow_bottom[] = {
   B00000,
   B00000,
@@ -95,9 +84,7 @@ void loop(){
   last_index = random_index;
 
   green_light();
-   walk();
-   lcd.setCursor(0, 1);
-   lcd.write(byte(0));
+   dont_walk();
   delay(RANDOM_GREEN_LENGTH[random_index]);
    lcd.clear();
 
@@ -105,9 +92,59 @@ void loop(){
   delay(DELAY_YELLOW);
 
   red_light();
-   lcd.begin(16, 2);
+   walk();
+   arrow();
+  delay(DELAY_RED);
+   lcd.clear();
+
+  yellow_light_warn();
+  delay(WARN_DELAY);
+}
+
+void green_light()
+{
+  digitalWrite(GREEN, HIGH);
+  digitalWrite(YELLOW, LOW);
+  digitalWrite(RED, LOW);
+}
+
+void yellow_light()
+{
+  digitalWrite(GREEN, LOW);
+  digitalWrite(YELLOW, HIGH);
+  digitalWrite(RED, LOW);
+}
+
+void red_light()
+{
+  digitalWrite(GREEN, LOW);
+  digitalWrite(YELLOW, LOW);
+  digitalWrite(RED, HIGH);
+}
+
+void yellow_light_warn() 
+{
+  digitalWrite(GREEN, LOW);
+  digitalWrite(YELLOW, HIGH);
+  digitalWrite(RED, HIGH);
+}
+
+void dont_walk()
+{
+lcd.begin(16, 2);
+   lcd.setCursor(0, 0);
+   lcd.print("DON'T WALK");
+}
+
+void walk()
+{
+lcd.begin(16, 2);
    lcd.setCursor(0, 0);
    lcd.print("WALK");
+}
+
+void arrow() 
+{
    lcd.setCursor(8, 0);
    lcd.write(byte(1));
    lcd.setCursor(9, 0);
@@ -128,41 +165,4 @@ void loop(){
    lcd.write(byte(3));
    lcd.setCursor(12, 1);
    lcd.write(byte(4));
-  delay(DELAY_RED);
-   lcd.clear();
-
-  yellow_light_warn();
-  delay(WARN_DELAY);
-}
-
-void green_light()
-{
-  digitalWrite(GREEN, HIGH);
-  digitalWrite(YELLOW, LOW);
-  digitalWrite(RED, LOW);
-}
-void yellow_light()
-{
-  digitalWrite(GREEN, LOW);
-  digitalWrite(YELLOW, HIGH);
-  digitalWrite(RED, LOW);
-}
-void red_light()
-{
-  digitalWrite(GREEN, LOW);
-  digitalWrite(YELLOW, LOW);
-  digitalWrite(RED, HIGH);
-}
-void yellow_light_warn() 
-{
-  digitalWrite(GREEN, LOW);
-  digitalWrite(YELLOW, HIGH);
-  digitalWrite(RED, HIGH);
-}
-
-void walk()
-{
-lcd.begin(16, 2);
-   lcd.setCursor(0, 0);
-   lcd.print("DON'T WALK");
 }
