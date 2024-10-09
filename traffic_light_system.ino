@@ -3,6 +3,8 @@
 int RED = 9;
 int YELLOW = 8;
 int GREEN = 7;
+
+
 LiquidCrystal lcd(11, 10, 5, 4, 3, 2);
 
 byte arrow_bottom[] = {
@@ -51,23 +53,62 @@ byte arrow_point_top[] = {
 
 int DELAY_RED = 5000;
 int DELAY_YELLOW = 2000;
-int DELAY_GREEN = 5000;
 int WARN_DELAY = 2000;
 int RANDOM_GREEN_LENGTH[5] = {5000, 8000, 15000, 3500, 12000};
 int last_index = -1;
 
+// Make a traffic light class that can be reused 
+class TrafficLight {
+  public: 
+     int redPin;
+     int yellowPin;
+     int greenPin;
+
+     TrafficLight(int red, int yellow, int green) {
+      redPin = red;
+      yellowPin = yellow;
+      greenPin = green;
+      pinMode(redPin, OUTPUT);
+      pinMode(yellowPin, OUTPUT);
+      pinMode(greenPin, OUTPUT);
+     }
+
+     void greenLight() {
+      digitalWrite(greenPin, HIGH);
+      digitalWrite(yellowPin, LOW);
+      digitalWrite(redPin, LOW);
+     }
+
+     void yellowLight() {
+      digitalWrite(greenPin, LOW);
+      digitalWrite(yellowPin, HIGH);
+      digitalWrite(redPin, LOW);
+     }
+
+     void redLight() {
+      digitalWrite(greenPin, LOW);
+      digitalWrite(yellowPin, LOW);
+      digitalWrite(redPin, HIGH);
+     }
+
+     void warnLight() {
+      digitalWrite(greenPin, LOW);
+      digitalWrite(yellowPin, HIGH);
+      digitalWrite(redPin, HIGH);
+     }
+}
+
+// Set traffic light class to pins on arduino
+TrafficLight(RED, YELLOW, GREEN);
+
 void setup(){
-  
-  pinMode(RED, OUTPUT);
-  pinMode(YELLOW, OUTPUT);
-  pinMode(GREEN,  OUTPUT);
   // Initialises the width, 16 columns. And rows , 2
      lcd.begin(16, 2);
      lcd.print("Traffic Light");
-     lcd.createChar(1, arrow_bottom);
-     lcd.createChar(2, arrow_top);
-     lcd.createChar(3, arrow_point_bottom);
-     lcd.createChar(4, arrow_point_top);
+   //  lcd.createChar(1, arrow_bottom);
+    //  lcd.createChar(2, arrow_top);
+    //  lcd.createChar(3, arrow_point_bottom);
+    //  lcd.createChar(4, arrow_point_top);
      delay(2000);
     //  Clears any text
      lcd.clear();
@@ -83,86 +124,26 @@ void loop(){
 
   last_index = random_index;
 
-  green_light();
-   dont_walk();
+  // trafficLight object handles light states instead of my original functions
+  TrafficLight.greenLight();
+  printMessage("DON'T WALK");
   delay(RANDOM_GREEN_LENGTH[random_index]);
    lcd.clear();
 
-  yellow_light();
+  TrafficLight.yellowLight();
   delay(DELAY_YELLOW);
 
-  red_light();
-   walk();
-   arrow();
+  TrafficLight.redLight();
+  //  arrow();
   delay(DELAY_RED);
    lcd.clear();
 
-  yellow_light_warn();
+  TrafficLight.warnLight();
   delay(WARN_DELAY);
 }
 
-void green_light()
-{
-  digitalWrite(GREEN, HIGH);
-  digitalWrite(YELLOW, LOW);
-  digitalWrite(RED, LOW);
-}
-
-void yellow_light()
-{
-  digitalWrite(GREEN, LOW);
-  digitalWrite(YELLOW, HIGH);
-  digitalWrite(RED, LOW);
-}
-
-void red_light()
-{
-  digitalWrite(GREEN, LOW);
-  digitalWrite(YELLOW, LOW);
-  digitalWrite(RED, HIGH);
-}
-
-void yellow_light_warn() 
-{
-  digitalWrite(GREEN, LOW);
-  digitalWrite(YELLOW, HIGH);
-  digitalWrite(RED, HIGH);
-}
-
-void dont_walk()
-{
-lcd.begin(16, 2);
-   lcd.setCursor(0, 0);
-   lcd.print("DON'T WALK");
-}
-
-void walk()
-{
-lcd.begin(16, 2);
-   lcd.setCursor(0, 0);
-   lcd.print("WALK");
-}
-
-void arrow() 
-{
-   lcd.setCursor(8, 0);
-   lcd.write(byte(1));
-   lcd.setCursor(9, 0);
-   lcd.write(byte(1));
-   lcd.setCursor(10, 0);
-   lcd.write(byte(1));
-   lcd.setCursor(11, 0);
-   lcd.write(byte(1));
-   lcd.setCursor(8, 1);
-   lcd.write(byte(2));
-   lcd.setCursor(9, 1);
-   lcd.write(byte(2));
-   lcd.setCursor(10, 1);
-   lcd.write(byte(2));
-   lcd.setCursor(11, 1);
-   lcd.write(byte(2));
-   lcd.setCursor(12, 0);
-   lcd.write(byte(3));
-   lcd.setCursor(12, 1);
-   lcd.write(byte(4));
+void printMessage(String message) {
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(message);
 }
