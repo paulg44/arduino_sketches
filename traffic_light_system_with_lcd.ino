@@ -134,7 +134,7 @@ void loop(){
   delay(DELAY_YELLOW);
 
   TrafficLight.redLight();
-  //  arrow();
+  printMessage("WALK");
   delay(DELAY_RED);
    lcd.clear();
 
